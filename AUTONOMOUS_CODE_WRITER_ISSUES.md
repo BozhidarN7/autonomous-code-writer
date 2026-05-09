@@ -299,20 +299,33 @@ Safety rules enforced:
 
 **Type:** AFK
 
-### What to build
+**Status:** ✅ Completed
 
-Add the verification and PR-preparation slice. After implementation, the workflow should detect and run available test or lint commands where possible, capture results, prepare a pull request title and body, and pause-ready implementation summary for the human user.
+### What was built
 
-The slice is complete when the workflow can show the user what changed, what verification ran, and whether the implementation is ready for PR approval.
+Added the verification and PR-preparation slice. After implementation, the workflow now:
+
+1. **Best-effort verification** (`run_best_effort_verification`) — detects test and lint commands from repository metadata, runs the first available test command and the first available lint command in the clone directory using `subprocess.run`, captures stdout, stderr, exit code, duration, and a pass/fail status. Output is truncated to 2000 characters to keep state manageable.
+2. **Verification node** (`verification_node`) — LangGraph-compatible node that runs verification and stores results in `verification_results` state field. If no commands are detected, it records a clear note instead of failing silently.
+3. **PR preparation node** (`prepare_pr_node`) — builds a PR title (`feat: {proposal title}`) and a structured PR body that includes:
+   - Summary from the approved feature proposal
+   - List of changed files
+   - Verification results (commands run, pass/fail status, overall pass indicator)
+   - Linked issue reference (closes #{issue_number} + issue URL)
+   - Safety disclaimers that the human retains merge authority
+4. **Implementation summary node** (`implementation_summary_node`) — displays a human-readable preview before Gate 2 showing the proposed PR title, implementation plan, changed files, verification results, and a truncated diff summary. Collects `approve`, `reject`, or `revise <feedback>` input.
+5. **Gate 2 routing** (`route_gate2_decision`) — returns `'approve'`, `'reject'`, or `'revise'` based on the human decision stored in state, enabling conditional graph edges for the second HITL gate.
+6. **Safety behavior** — verification failure does not automatically discard the implementation. The failure is captured and surfaced in the PR body and implementation summary so the human can decide whether to proceed, revise, or reject.
+7. **Demo cell** — end-to-end demonstration that reuses the Issue 6 demo state, runs verification, prepares PR metadata, and prints verification results, PR title, and PR body preview.
 
 ### Acceptance criteria
 
-- [ ] The workflow detects likely test or lint commands from repository metadata.
-- [ ] The workflow runs best-effort verification commands when available.
-- [ ] Verification output, pass/fail status, and unavailable-command notes are captured in state.
-- [ ] Verification failure does not automatically discard the implementation, but the failure is made visible.
-- [ ] The workflow prepares a PR title and body linking the approved issue and summarizing verification results.
-- [ ] The workflow prepares a human-readable implementation summary for PR approval.
+- [x] The workflow detects likely test or lint commands from repository metadata.
+- [x] The workflow runs best-effort verification commands when available.
+- [x] Verification output, pass/fail status, and unavailable-command notes are captured in state.
+- [x] Verification failure does not automatically discard the implementation, but the failure is made visible.
+- [x] The workflow prepares a PR title and body linking the approved issue and summarizing verification results.
+- [x] The workflow prepares a human-readable implementation summary for PR approval.
 
 ### Blocked by
 
