@@ -43,320 +43,35 @@ This backlog breaks the PRD into independently grabbable tracer-bullet issues. T
 
 8. **Push the approved branch and create a traceable pull request**
    **Type:** HITL
+   **Status:** ✅ Completed
    **Blocked by:** 7
-   **User stories covered:** 30, 33, 34, 39, 40
 
-9. **Review the created pull request and post a GitHub review comment**
-   **Type:** AFK
-   **Blocked by:** 8
-   **User stories covered:** 35, 36, 37, 38, 57
+   ### What was built
 
-10. **Expose the end-to-end `execute_workflow` interface with memory and resume handling**
-    **Type:** AFK
-    **Blocked by:** 4, 7, 9
-    **User stories covered:** 45, 46, 47, 48, 60
+   Added the second Human-in-the-Loop slice and PR creation path. After implementation and verification, the workflow now:
 
-11. **Add five reproducible notebook test cases against one owned demo repository**
-    **Type:** HITL
-    **Blocked by:** 10
-    **User stories covered:** 49, 50, 51
+   1. **Pauses at Gate 2** (`implementation_summary_node`) — displays the proposed PR title, implementation plan, changed files, verification results, and diff summary. Collects `approve`, `reject`, or `revise <feedback>` input.
+   2. **Routes Gate 2 decisions** (`route_gate2_decision`) — returns `'approve'`, `'reject'`, or `'revise'` based on the human decision stored in state.
+   3. **Pushes the branch** (`push_branch`) — pushes the local implementation branch to the remote using token-based authentication.
+   4. **Creates a GitHub pull request** (`create_pull_request`) — creates a PR with the prepared title and body, linking back to the approved issue. Handles duplicate PR gracefully by returning the existing open PR.
+   5. **Stores PR metadata** (`create_pr_node`) — stores the PR URL and PR number in workflow state.
+   6. **Rejection path** (`reject_pr_node`) — stops the workflow cleanly without pushing or creating a PR.
+   7. **Safety guarantees** — the workflow never merges the pull request automatically; merge authority remains with the human.
 
-12. **Document safety boundaries, limitations, and final submission guidance**
-    **Type:** AFK
-    **Blocked by:** 10, 11
-    **User stories covered:** 1, 40, 41, 42, 52, 53
+   ### Acceptance criteria
 
-## Issue 1: Notebook assignment shell and visible scenario walkthrough
+   - [x] The workflow pauses before pushing the implementation branch and creating a pull request.
+   - [x] The approval prompt includes changed files, diff summary, verification results, and proposed PR metadata.
+   - [x] Human input of `approve` commits changes, pushes the feature branch, and creates the pull request.
+   - [x] Human input of `reject` stops the workflow before PR creation.
+   - [x] Human input starting with `revise` routes back to implementation using the feedback.
+   - [x] The pull request links the approved GitHub issue.
+   - [x] The PR URL and PR number are stored in workflow state.
+   - [x] The workflow never merges the created pull request.
 
-**Type:** AFK
+   ### Blocked by
 
-**Status:** ✅ Completed
-
-### What was built
-
-Created the initial notebook structure for the Autonomous Code Writer assignment. The notebook now contains:
-
-1. **Title and scenario description** — Clear explanation of the autonomous coding assistant scenario, the 10-step workflow, and the human-in-control design.
-2. **Architecture text flow** — ASCII diagram showing every node from Request Parser through Final Response, including the two HITL gates, revision loops, and termination paths.
-3. **State object documentation** — Typed schema table listing all 20+ state fields and their purposes.
-4. **Memory & checkpointing explanation** — How `MemorySaver` preserves state across interruptions and revision cycles.
-5. **Five agents documentation** — Repository Analyst, Feature Strategist, GitHub Coordinator, Implementation Agent, and PR Review Agent, each with role, tools, output, and safety notes.
-6. **Requirements checklist** — 12-row table mapping assignment requirements to planned components, with status legend.
-7. **Human responsibility section** — Explicit statement that the human retains final authority at feature approval, implementation approval, and merge decisions.
-8. **Expected GitHub workflow** — Summary of the 5 GitHub artifacts created in sequence (issue, branch, commits, PR, review comment).
-9. **Safety boundaries preview** — High-level safety rules before the full documentation is added in Issue 12.
-10. **Implementation roadmap** — Placeholder listing all 11 remaining issues with their planned notebook sections.
-
-The notebook is now readable and grader-friendly, with clear markdown sections before any implementation cells. A placeholder code cell confirms Issue 1 completion.
-
-### Acceptance criteria
-
-Create the initial notebook structure for the Autonomous Code Writer assignment. The completed slice should make the project understandable before any complex implementation exists. It should describe the selected scenario, the multi-agent architecture, the assignment requirement mapping, the expected GitHub workflow, and the role of the human reviewer.
-
-The slice is complete when the notebook can be opened and a grader can understand what the system will do, which agents exist, where tools are used, where memory is used, and where Human-in-the-Loop interruptions occur.
-
-### Acceptance criteria
-
-- [x] The notebook contains a clear title and scenario description for the Autonomous Code Writer workflow.
-- [x] The notebook includes an architecture diagram or text flow from user request to final PR review comment.
-- [x] The notebook includes a requirements checklist mapping the assignment requirements to planned implementation components.
-- [x] The notebook explains the five planned agents: Repository Analyst, Feature Strategist, GitHub Coordinator, Implementation Agent, and PR Review Agent.
-- [x] The notebook explains that the human user remains responsible for final merge decisions.
-- [x] The notebook remains readable and grader-friendly, with clear markdown sections before implementation cells.
-
-### Blocked by
-
-None - can start immediately.
-
----
-
-## Issue 2: Secure runtime setup with OpenAI and GitHub configuration check
-
-**Type:** AFK
-
-**Status:** ✅ Completed
-
-### What was built
-
-Added the runtime setup section to the notebook, including:
-
-1. **Dependency installation** — `langchain`, `langgraph`, `langchain-openai`, `openai`, `pygithub`, `gitpython` installed via pip.
-2. **Secret loading** — `OPENAI_API_KEY` and `GITHUB_TOKEN` loaded from environment variables or Google Colab Secrets, with clear error messages when missing and without exposing values.
-3. **OpenAI model initialization** — `ChatOpenAI` initialized with configurable model name defaulting to `gpt-5.4-mini-2026-03-17`.
-4. **GitHub client initialization** — `Github` client authenticated, reporting the current user login without printing tokens.
-5. **GitHub token permissions documentation** — markdown section documenting required permissions (contents, issues, pull requests, metadata) for both classic and fine-grained tokens.
-6. **Secret loading rules documentation** — explicit rules that secrets are never hardcoded, never printed, and missing secrets halt setup with clear errors.
-
-### Acceptance criteria
-
-- [x] The notebook installs the required dependencies for LangChain, LangGraph, OpenAI, GitHub access, and Git operations.
-- [x] The notebook loads `OPENAI_API_KEY` and `GITHUB_TOKEN` from environment variables or Colab Secrets only.
-- [x] Missing secrets produce clear errors without exposing secret values.
-- [x] The OpenAI chat model is initialized with configurable model name defaulting to `gpt-5.4-mini-2026-03-17`.
-- [x] The GitHub client can authenticate and report the current user or repository access without printing tokens.
-- [x] The setup section documents the required GitHub token permissions.
-
-### Blocked by
-
-None - can start immediately.
-
----
-
-## Issue 3: Parse a repository request and inspect a real GitHub repository
-
-**Type:** AFK
-
-**Status:** ✅ Completed
-
-### What was built
-
-Created the first end-to-end repository-analysis path. The system can now:
-
-1. **Request Parser** (`parse_repository_request`) — extracts `owner/repo` and full URL from a natural-language user request using a regex that matches `https://github.com/{owner}/{repo}`.
-2. **Repository Cloner** (`clone_repository`) — clones the target repository into an isolated temporary directory (`/tmp/acw_{owner}_{repo}`), cleaning up any previous clone to avoid conflicts. Uses shallow clone (`depth=1`) for speed.
-3. **File Tree Inspector** (`list_repository_files`) — recursively walks the cloned repo and returns up to 200 relative file paths, skipping heavy or irrelevant directories such as `.git`, `node_modules`, `__pycache__`, virtual environments, build artifacts, IDE folders, and coverage output.
-4. **Metadata Detector** (`detect_project_metadata`) — identifies:
-   - **Languages** from file extensions (25+ mappings covering Python, JavaScript, TypeScript, Java, Go, Rust, Ruby, C/C++, C#, and more).
-   - **Package managers / build tools** from known files (`package.json`, `requirements.txt`, `Cargo.toml`, `go.mod`, `pom.xml`, `Makefile`, `Dockerfile`, etc.).
-   - **Likely test commands** inferred from detected ecosystems (e.g., `pytest`, `npm test`, `cargo test`, `go test ./...`).
-   - **Likely lint commands** inferred from detected ecosystems (e.g., `flake8`, `ruff check .`, `cargo clippy`, `gofmt -l .`).
-   - **Key files** such as `README.md`, `LICENSE`, `.gitignore`, config files, and package manager files.
-5. **Key File Snippet Reader** (`read_key_file_snippets`) — reads the first 50 lines of each key file to give the LLM context without loading large files.
-6. **Repository Analyst Agent** (`run_repository_analyst`) — invokes the LLM with a structured system prompt and a human prompt containing the file tree, metadata, and snippets. Produces a concise technical summary (under 250 words) covering languages, frameworks, project structure, package manager, important directories, and any noteworthy flags.
-7. **Workflow State Schema** (`WorkflowState`) — typed `TypedDict` with fields for repository info, files, metadata, summary, and all downstream fields needed by future agents. Uses `Annotated[List[BaseMessage], add_messages]` for conversational memory.
-8. **Graph Nodes** — three LangGraph-compatible nodes:
-   - `parse_request_node` — parses the user request into state.
-   - `clone_and_inspect_node` — clones the repo and populates file/metadata state.
-   - `analyze_repository_node` — runs the Repository Analyst Agent and stores the summary.
-9. **Demo Cell** — an end-to-end runnable demonstration that parses a request, clones the demo repository, inspects it, and prints the repository summary and detected stack without exposing secrets.
-
-### Acceptance criteria
-
-- [x] A user request containing a GitHub repository URL is parsed into owner, repository name, and repository URL.
-- [x] The target repository is cloned into an isolated local working directory.
-- [x] The repository file listing ignores heavy or irrelevant directories such as `.git`, dependency folders, virtual environments, and build artifacts.
-- [x] The system detects common project metadata such as language indicators, package manager files, and likely test or lint commands.
-- [x] The Repository Analyst Agent stores a repository summary in the workflow state.
-- [x] The notebook output shows the repository summary and detected stack without exposing secrets.
-
-### Blocked by
-
-- Issue 2: Secure runtime setup with OpenAI and GitHub configuration check
-
----
-
-## Issue 4: Generate a feature proposal and pause for human approval
-
-**Type:** HITL
-
-**Status:** ✅ Completed
-
-### What was built
-
-Added the feature strategy slice with the first Human-in-the-Loop interruption:
-
-1. **Feature Strategist Agent** (`run_feature_strategist`) — generates 2-3 conservative feature ideas based on the repository summary and metadata, selects the best option, and returns a structured JSON proposal containing title, body, value, implementation scope, risk level, and acceptance criteria.
-2. **Feature proposal generation node** (`generate_feature_proposal_node`) — LangGraph-compatible node that invokes the Feature Strategist Agent and stores the proposal in workflow state.
-3. **HITL Gate 1 node** (`human_review_gate1_node`) — pauses the workflow and displays the feature proposal to the human user with clear instructions for `approve`, `reject`, or `revise <feedback>`.
-4. **Revision node** (`revise_feature_proposal_node`) — when the user provides revision feedback, this node regenerates the proposal using the previous proposal and the human feedback, then resets the gate decision to `pending` for re-review.
-5. **Routing function** (`route_gate1_decision`) — returns `'approve'`, `'reject'`, or `'revise'` based on the human decision stored in state, enabling conditional graph edges.
-6. **Demo cell** — demonstrates proposal generation and simulates the HITL gate, showing what the human would see during an interruption.
-
-### Acceptance criteria
-
-- [x] The Feature Strategist Agent uses repository analysis to generate feature ideas relevant to the target repository.
-- [x] The selected feature proposal includes title, body, value, implementation scope, risk level, and acceptance criteria.
-- [x] The workflow pauses before creating any GitHub issue.
-- [x] Human input of `approve` routes the workflow toward issue creation.
-- [x] Human input of `reject` stops the workflow without creating GitHub artifacts.
-- [x] Human input starting with `revise` routes back to regenerate or update the proposal using the feedback.
-- [x] The human decision and feedback are stored in workflow state.
-
-### Blocked by
-
-- Issue 1: Notebook assignment shell and visible scenario walkthrough
-- Issue 3: Parse a repository request and inspect a real GitHub repository
-
----
-
-## Issue 5: Create an approved GitHub issue and safe implementation branch
-
-**Type:** HITL
-
-**Status:** ✅ Completed
-
-### What was built
-
-Created the GitHub coordination slice that performs the first real repository write actions after human approval. The system now can:
-
-1. **GitHub issue creation** (`create_github_issue`) — creates a GitHub issue using the authenticated PyGithub client, returning the issue URL and number.
-2. **Safe branch name generation** (`generate_safe_branch_name`) — produces a branch name in the format `feature/acw-{issue_number}-{feature_slug}` that references the issue and a sanitized feature title slug.
-3. **Local implementation branch creation** (`create_implementation_branch`) — creates a new local branch based on the default branch and checks it out, never modifying the default branch directly.
-4. **Branch push helper** (`push_branch`) — pushes the local branch to the remote repository using token-based authentication.
-5. **Issue creation node** (`create_issue_node`) — LangGraph-compatible node that builds the issue body from the approved feature proposal (including title, body, value, implementation scope, risk level, acceptance criteria, and safety disclaimers) and stores the issue URL and number in workflow state.
-6. **Branch creation node** (`create_branch_node`) — LangGraph-compatible node that generates the branch name and creates the local implementation branch, storing the branch name in workflow state.
-7. **Safety documentation** — the issue body explicitly states that the human user retains final authority over merge decisions, and the demo cell clearly documents that the workflow will never merge pull requests automatically.
-
-### Acceptance criteria
-
-- [x] A GitHub issue is created only after the feature proposal has been approved by the human user.
-- [x] The issue title and body match the approved feature proposal.
-- [x] The issue URL and issue number are stored in workflow state.
-- [x] The workflow detects the repository default branch.
-- [x] A new implementation branch is created locally and never replaces or modifies the default branch directly.
-- [x] The generated branch name references the issue number and feature slug.
-- [x] The workflow clearly documents that it will not merge pull requests automatically.
-
-### Blocked by
-
-- Issue 4: Generate a feature proposal and pause for human approval
-
----
-
-## Issue 6: Implement an approved medium feature with focused repository changes
-
-**Type:** AFK
-
-**Status:** ✅ Completed
-
-### What was built
-
-Added the implementation slice that makes focused, safe code changes on the feature branch after a GitHub issue and branch exist. The system now can:
-
-1. **Implementation Agent** (`run_implementation_agent`) — generates a concise implementation plan and structured file changes (create, modify, append) based on the approved feature proposal and repository context. Returns JSON with `plan` and `changed_files`.
-2. **Safety path validator** (`is_path_safe`) — blocks edits to secrets, credentials, CI/CD configs, deployment manifests, auth files, and paths outside the clone directory.
-3. **File change applier** (`apply_file_changes`) — writes `create`/`modify`/`append` actions to disk, skipping any unsafe paths and reporting skips visibly.
-4. **Git commit helper** (`commit_changes`) — stages and commits all changes on the current branch with a descriptive message.
-5. **Diff capture** (`get_git_diff_summary`, `get_changed_files_list`) — captures changed file paths and a truncated diff summary for workflow state and human review.
-6. **Implementation node** (`implementation_node`) — LangGraph-compatible node that orchestrates plan generation, file application, commit, and state capture.
-7. **Demo cell** — end-to-end demonstration that parses a request, clones the repo, analyzes it, injects a mock proposal, creates a feature branch, runs the Implementation Agent, and prints the plan, changed files, diff summary, and safety confirmation.
-
-Safety rules enforced:
-- Never modifies files outside the clone directory.
-- Never modifies `.git/`, `.env`, secrets files, CI/CD configs, or deployment manifests.
-- Never rewrites authentication, database migrations, or broad dependency upgrades.
-- Prefers documentation, tests, examples, or small focused code changes.
-- Avoids unrelated refactors.
-- Adds or updates tests when feasible.
-
-### Acceptance criteria
-
-- [x] The Implementation Agent creates a concise implementation plan based on the approved issue.
-- [x] The agent modifies files only on the implementation branch.
-- [x] The changes are focused on the approved issue and avoid unrelated refactors.
-- [x] The agent avoids secrets, credential files, default branch modifications, broad dependency upgrades, migrations, and deployment changes.
-- [x] The agent adds or updates tests when feasible for the selected change.
-- [x] The changed files and git diff are captured in workflow state.
-- [x] The notebook output summarizes the implementation without overwhelming the reader.
-
-### Blocked by
-
-- Issue 5: Create an approved GitHub issue and safe implementation branch
-
----
-
-## Issue 7: Run best-effort verification and prepare implementation for PR approval
-
-**Type:** AFK
-
-**Status:** ✅ Completed
-
-### What was built
-
-Added the verification and PR-preparation slice. After implementation, the workflow now:
-
-1. **Best-effort verification** (`run_best_effort_verification`) — detects test and lint commands from repository metadata, runs the first available test command and the first available lint command in the clone directory using `subprocess.run`, captures stdout, stderr, exit code, duration, and a pass/fail status. Output is truncated to 2000 characters to keep state manageable.
-2. **Verification node** (`verification_node`) — LangGraph-compatible node that runs verification and stores results in `verification_results` state field. If no commands are detected, it records a clear note instead of failing silently.
-3. **PR preparation node** (`prepare_pr_node`) — builds a PR title (`feat: {proposal title}`) and a structured PR body that includes:
-   - Summary from the approved feature proposal
-   - List of changed files
-   - Verification results (commands run, pass/fail status, overall pass indicator)
-   - Linked issue reference (closes #{issue_number} + issue URL)
-   - Safety disclaimers that the human retains merge authority
-4. **Implementation summary node** (`implementation_summary_node`) — displays a human-readable preview before Gate 2 showing the proposed PR title, implementation plan, changed files, verification results, and a truncated diff summary. Collects `approve`, `reject`, or `revise <feedback>` input.
-5. **Gate 2 routing** (`route_gate2_decision`) — returns `'approve'`, `'reject'`, or `'revise'` based on the human decision stored in state, enabling conditional graph edges for the second HITL gate.
-6. **Safety behavior** — verification failure does not automatically discard the implementation. The failure is captured and surfaced in the PR body and implementation summary so the human can decide whether to proceed, revise, or reject.
-7. **Demo cell** — end-to-end demonstration that reuses the Issue 6 demo state, runs verification, prepares PR metadata, and prints verification results, PR title, and PR body preview.
-
-### Acceptance criteria
-
-- [x] The workflow detects likely test or lint commands from repository metadata.
-- [x] The workflow runs best-effort verification commands when available.
-- [x] Verification output, pass/fail status, and unavailable-command notes are captured in state.
-- [x] Verification failure does not automatically discard the implementation, but the failure is made visible.
-- [x] The workflow prepares a PR title and body linking the approved issue and summarizing verification results.
-- [x] The workflow prepares a human-readable implementation summary for PR approval.
-
-### Blocked by
-
-- Issue 6: Implement an approved medium feature with focused repository changes
-
----
-
-## Issue 8: Push the approved branch and create a traceable pull request
-
-**Type:** HITL
-
-### What to build
-
-Add the second Human-in-the-Loop slice and PR creation path. Before publishing the branch, the workflow should pause and ask the user to approve, reject, or revise the implementation. Approval should commit changes, push the branch, and create a GitHub pull request. Revision should route back to implementation. Rejection should stop without creating a PR.
-
-The completed slice demonstrates the second required HITL interruption and the real GitHub PR creation path.
-
-### Acceptance criteria
-
-- [ ] The workflow pauses before pushing the implementation branch and creating a pull request.
-- [ ] The approval prompt includes changed files, diff summary, verification results, and proposed PR metadata.
-- [ ] Human input of `approve` commits changes, pushes the feature branch, and creates the pull request.
-- [ ] Human input of `reject` stops the workflow before PR creation.
-- [ ] Human input starting with `revise` routes back to implementation using the feedback.
-- [ ] The pull request links the approved GitHub issue.
-- [ ] The PR URL and PR number are stored in workflow state.
-- [ ] The workflow never merges the created pull request.
-
-### Blocked by
-
-- Issue 7: Run best-effort verification and prepare implementation for PR approval
+   - Issue 7: Run best-effort verification and prepare implementation for PR approval
 
 ---
 
