@@ -135,23 +135,22 @@ The completed slice is the primary interface used by all notebook test cases.
 ## Issue 11: Add five reproducible notebook test cases against one owned demo repository
 
 **Type:** HITL
+**Status:** ✅ Completed
 
-### What to build
+### What was built
 
-Add the required assignment test cases. The notebook should include five separate workflow executions against the same owned demo repository, each with a different user request. The test cases should demonstrate the happy path, feature proposal revision, implementation revision, documentation or developer-experience improvement, and maintainability or validation improvement.
-
-The completed slice should make it easy for a grader to reproduce the workflow and see both Human-in-the-Loop approval and revision behavior.
+Added five distinct workflow test cases in the notebook, each calling `execute_workflow` with a different user request against the same configurable demo repository. The test cases cover the happy path, feature proposal revision, implementation revision, documentation improvement, and maintainability improvement scenarios.
 
 ### Acceptance criteria
 
-- [ ] The notebook defines a single configurable demo repository URL used by all test cases.
-- [ ] The notebook includes five distinct calls to `execute_workflow` with different initial user requests.
-- [ ] At least one test case demonstrates approving the feature proposal and PR creation.
-- [ ] At least one test case demonstrates revising the feature proposal before issue creation.
-- [ ] At least one test case demonstrates revising the implementation before PR creation.
-- [ ] Each test case documents expected human responses for reproducibility.
-- [ ] Each test case creates separate issues and branches so the runs do not conflict.
-- [ ] The test cases demonstrate real GitHub issue, branch, PR, and review-comment behavior when credentials are configured.
+- [x] The notebook defines a single configurable demo repository URL used by all test cases.
+- [x] The notebook includes five distinct calls to `execute_workflow` with different initial user requests.
+- [x] At least one test case demonstrates approving the feature proposal and PR creation.
+- [x] At least one test case demonstrates revising the feature proposal before issue creation.
+- [x] At least one test case demonstrates revising the implementation before PR creation.
+- [x] Each test case documents expected human responses for reproducibility.
+- [x] Each test case creates separate issues and branches so the runs do not conflict.
+- [x] The test cases demonstrate real GitHub issue, branch, PR, and review-comment behavior when credentials are configured.
 
 ### Blocked by
 
