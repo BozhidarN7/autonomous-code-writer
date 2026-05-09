@@ -189,21 +189,28 @@ Created the first end-to-end repository-analysis path. The system can now:
 
 **Type:** HITL
 
-### What to build
+**Status:** ✅ Completed
 
-Add the feature strategy slice. After repository analysis, the Feature Strategist Agent should generate conservative, useful feature ideas, select the most appropriate option, create an issue-ready title and body, and pause the graph for human approval before any GitHub issue is created.
+### What was built
 
-The slice should demonstrate the first required Human-in-the-Loop interruption. Human responses must support approval, rejection, and revision feedback.
+Added the feature strategy slice with the first Human-in-the-Loop interruption:
+
+1. **Feature Strategist Agent** (`run_feature_strategist`) — generates 2-3 conservative feature ideas based on the repository summary and metadata, selects the best option, and returns a structured JSON proposal containing title, body, value, implementation scope, risk level, and acceptance criteria.
+2. **Feature proposal generation node** (`generate_feature_proposal_node`) — LangGraph-compatible node that invokes the Feature Strategist Agent and stores the proposal in workflow state.
+3. **HITL Gate 1 node** (`human_review_gate1_node`) — pauses the workflow and displays the feature proposal to the human user with clear instructions for `approve`, `reject`, or `revise <feedback>`.
+4. **Revision node** (`revise_feature_proposal_node`) — when the user provides revision feedback, this node regenerates the proposal using the previous proposal and the human feedback, then resets the gate decision to `pending` for re-review.
+5. **Routing function** (`route_gate1_decision`) — returns `'approve'`, `'reject'`, or `'revise'` based on the human decision stored in state, enabling conditional graph edges.
+6. **Demo cell** — demonstrates proposal generation and simulates the HITL gate, showing what the human would see during an interruption.
 
 ### Acceptance criteria
 
-- [ ] The Feature Strategist Agent uses repository analysis to generate feature ideas relevant to the target repository.
-- [ ] The selected feature proposal includes title, body, value, implementation scope, risk level, and acceptance criteria.
-- [ ] The workflow pauses before creating any GitHub issue.
-- [ ] Human input of `approve` routes the workflow toward issue creation.
-- [ ] Human input of `reject` stops the workflow without creating GitHub artifacts.
-- [ ] Human input starting with `revise` routes back to regenerate or update the proposal using the feedback.
-- [ ] The human decision and feedback are stored in workflow state.
+- [x] The Feature Strategist Agent uses repository analysis to generate feature ideas relevant to the target repository.
+- [x] The selected feature proposal includes title, body, value, implementation scope, risk level, and acceptance criteria.
+- [x] The workflow pauses before creating any GitHub issue.
+- [x] Human input of `approve` routes the workflow toward issue creation.
+- [x] Human input of `reject` stops the workflow without creating GitHub artifacts.
+- [x] Human input starting with `revise` routes back to regenerate or update the proposal using the feedback.
+- [x] The human decision and feedback are stored in workflow state.
 
 ### Blocked by
 
