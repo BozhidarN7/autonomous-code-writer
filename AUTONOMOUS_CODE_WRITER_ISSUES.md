@@ -146,20 +146,38 @@ None - can start immediately.
 
 **Type:** AFK
 
-### What to build
+**Status:** ✅ Completed
 
-Create the first end-to-end repository-analysis path. Given a natural language user request containing a GitHub repository URL, the workflow should extract the repository owner/name, clone the repository into a temporary working directory, inspect the file tree, detect project metadata, identify likely test or lint commands, and produce a concise repository summary.
+### What was built
 
-This is a tracer bullet through request parsing, GitHub/repository tools, state updates, and visible notebook output.
+Created the first end-to-end repository-analysis path. The system can now:
+
+1. **Request Parser** (`parse_repository_request`) — extracts `owner/repo` and full URL from a natural-language user request using a regex that matches `https://github.com/{owner}/{repo}`.
+2. **Repository Cloner** (`clone_repository`) — clones the target repository into an isolated temporary directory (`/tmp/acw_{owner}_{repo}`), cleaning up any previous clone to avoid conflicts. Uses shallow clone (`depth=1`) for speed.
+3. **File Tree Inspector** (`list_repository_files`) — recursively walks the cloned repo and returns up to 200 relative file paths, skipping heavy or irrelevant directories such as `.git`, `node_modules`, `__pycache__`, virtual environments, build artifacts, IDE folders, and coverage output.
+4. **Metadata Detector** (`detect_project_metadata`) — identifies:
+   - **Languages** from file extensions (25+ mappings covering Python, JavaScript, TypeScript, Java, Go, Rust, Ruby, C/C++, C#, and more).
+   - **Package managers / build tools** from known files (`package.json`, `requirements.txt`, `Cargo.toml`, `go.mod`, `pom.xml`, `Makefile`, `Dockerfile`, etc.).
+   - **Likely test commands** inferred from detected ecosystems (e.g., `pytest`, `npm test`, `cargo test`, `go test ./...`).
+   - **Likely lint commands** inferred from detected ecosystems (e.g., `flake8`, `ruff check .`, `cargo clippy`, `gofmt -l .`).
+   - **Key files** such as `README.md`, `LICENSE`, `.gitignore`, config files, and package manager files.
+5. **Key File Snippet Reader** (`read_key_file_snippets`) — reads the first 50 lines of each key file to give the LLM context without loading large files.
+6. **Repository Analyst Agent** (`run_repository_analyst`) — invokes the LLM with a structured system prompt and a human prompt containing the file tree, metadata, and snippets. Produces a concise technical summary (under 250 words) covering languages, frameworks, project structure, package manager, important directories, and any noteworthy flags.
+7. **Workflow State Schema** (`WorkflowState`) — typed `TypedDict` with fields for repository info, files, metadata, summary, and all downstream fields needed by future agents. Uses `Annotated[List[BaseMessage], add_messages]` for conversational memory.
+8. **Graph Nodes** — three LangGraph-compatible nodes:
+   - `parse_request_node` — parses the user request into state.
+   - `clone_and_inspect_node` — clones the repo and populates file/metadata state.
+   - `analyze_repository_node` — runs the Repository Analyst Agent and stores the summary.
+9. **Demo Cell** — an end-to-end runnable demonstration that parses a request, clones the demo repository, inspects it, and prints the repository summary and detected stack without exposing secrets.
 
 ### Acceptance criteria
 
-- [ ] A user request containing a GitHub repository URL is parsed into owner, repository name, and repository URL.
-- [ ] The target repository is cloned into an isolated local working directory.
-- [ ] The repository file listing ignores heavy or irrelevant directories such as `.git`, dependency folders, virtual environments, and build artifacts.
-- [ ] The system detects common project metadata such as language indicators, package manager files, and likely test or lint commands.
-- [ ] The Repository Analyst Agent stores a repository summary in the workflow state.
-- [ ] The notebook output shows the repository summary and detected stack without exposing secrets.
+- [x] A user request containing a GitHub repository URL is parsed into owner, repository name, and repository URL.
+- [x] The target repository is cloned into an isolated local working directory.
+- [x] The repository file listing ignores heavy or irrelevant directories such as `.git`, dependency folders, virtual environments, and build artifacts.
+- [x] The system detects common project metadata such as language indicators, package manager files, and likely test or lint commands.
+- [x] The Repository Analyst Agent stores a repository summary in the workflow state.
+- [x] The notebook output shows the repository summary and detected stack without exposing secrets.
 
 ### Blocked by
 
