@@ -105,23 +105,24 @@ The completed slice makes the system behave like a self-reviewing autonomous cod
 ## Issue 10: Expose the end-to-end `execute_workflow` interface with memory and resume handling
 
 **Type:** AFK
+**Status:** ✅ Completed
 
-### What to build
+### What was built
 
-Connect the implemented slices into the required public workflow function. The `execute_workflow` function should accept a single string user request, initialize the LangGraph workflow, use a memory checkpointer, handle interruptions, collect human feedback, resume execution, and return structured final state.
+Connected all implemented slices into the required public workflow function. The notebook now defines `execute_workflow(user_request: str)` which initializes the compiled LangGraph workflow, uses a memory checkpointer, handles interruptions, collects human feedback, resumes execution, and returns structured final state.
 
-The completed slice should be the primary interface used by all notebook test cases.
+The completed slice is the primary interface used by all notebook test cases.
 
 ### Acceptance criteria
 
-- [ ] The notebook defines `execute_workflow(user_request: str)`.
-- [ ] The function initializes or uses the compiled LangGraph workflow.
-- [ ] The workflow uses a memory checkpointer to preserve state across interruptions.
-- [ ] The function detects graph interruptions and displays the approval prompt clearly.
-- [ ] The function collects human feedback and resumes the graph from the interruption.
-- [ ] The function supports multiple interruption cycles for revision flows.
-- [ ] The returned final state includes repository summary, issue URL, branch name, PR URL, verification results, review summary, and review comment URL where applicable.
-- [ ] The notebook output makes the agent interactions and state progress visible.
+- [x] The notebook defines `execute_workflow(user_request: str)`.
+- [x] The function initializes or uses the compiled LangGraph workflow.
+- [x] The workflow uses a memory checkpointer to preserve state across interruptions.
+- [x] The function detects graph interruptions and displays the approval prompt clearly.
+- [x] The function collects human feedback and resumes the graph from the interruption.
+- [x] The function supports multiple interruption cycles for revision flows.
+- [x] The returned final state includes repository summary, issue URL, branch name, PR URL, verification results, review summary, and review comment URL where applicable.
+- [x] The notebook output makes the agent interactions and state progress visible.
 
 ### Blocked by
 
