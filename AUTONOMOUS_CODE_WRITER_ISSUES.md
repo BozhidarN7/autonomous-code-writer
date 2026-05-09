@@ -70,7 +70,26 @@ This backlog breaks the PRD into independently grabbable tracer-bullet issues. T
 
 **Type:** AFK
 
-### What to build
+**Status:** ✅ Completed
+
+### What was built
+
+Created the initial notebook structure for the Autonomous Code Writer assignment. The notebook now contains:
+
+1. **Title and scenario description** — Clear explanation of the autonomous coding assistant scenario, the 10-step workflow, and the human-in-control design.
+2. **Architecture text flow** — ASCII diagram showing every node from Request Parser through Final Response, including the two HITL gates, revision loops, and termination paths.
+3. **State object documentation** — Typed schema table listing all 20+ state fields and their purposes.
+4. **Memory & checkpointing explanation** — How `MemorySaver` preserves state across interruptions and revision cycles.
+5. **Five agents documentation** — Repository Analyst, Feature Strategist, GitHub Coordinator, Implementation Agent, and PR Review Agent, each with role, tools, output, and safety notes.
+6. **Requirements checklist** — 12-row table mapping assignment requirements to planned components, with status legend.
+7. **Human responsibility section** — Explicit statement that the human retains final authority at feature approval, implementation approval, and merge decisions.
+8. **Expected GitHub workflow** — Summary of the 5 GitHub artifacts created in sequence (issue, branch, commits, PR, review comment).
+9. **Safety boundaries preview** — High-level safety rules before the full documentation is added in Issue 12.
+10. **Implementation roadmap** — Placeholder listing all 11 remaining issues with their planned notebook sections.
+
+The notebook is now readable and grader-friendly, with clear markdown sections before any implementation cells. A placeholder code cell confirms Issue 1 completion.
+
+### Acceptance criteria
 
 Create the initial notebook structure for the Autonomous Code Writer assignment. The completed slice should make the project understandable before any complex implementation exists. It should describe the selected scenario, the multi-agent architecture, the assignment requirement mapping, the expected GitHub workflow, and the role of the human reviewer.
 
@@ -78,12 +97,12 @@ The slice is complete when the notebook can be opened and a grader can understan
 
 ### Acceptance criteria
 
-- [ ] The notebook contains a clear title and scenario description for the Autonomous Code Writer workflow.
-- [ ] The notebook includes an architecture diagram or text flow from user request to final PR review comment.
-- [ ] The notebook includes a requirements checklist mapping the assignment requirements to planned implementation components.
-- [ ] The notebook explains the five planned agents: Repository Analyst, Feature Strategist, GitHub Coordinator, Implementation Agent, and PR Review Agent.
-- [ ] The notebook explains that the human user remains responsible for final merge decisions.
-- [ ] The notebook remains readable and grader-friendly, with clear markdown sections before implementation cells.
+- [x] The notebook contains a clear title and scenario description for the Autonomous Code Writer workflow.
+- [x] The notebook includes an architecture diagram or text flow from user request to final PR review comment.
+- [x] The notebook includes a requirements checklist mapping the assignment requirements to planned implementation components.
+- [x] The notebook explains the five planned agents: Repository Analyst, Feature Strategist, GitHub Coordinator, Implementation Agent, and PR Review Agent.
+- [x] The notebook explains that the human user remains responsible for final merge decisions.
+- [x] The notebook remains readable and grader-friendly, with clear markdown sections before implementation cells.
 
 ### Blocked by
 
