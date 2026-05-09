@@ -114,20 +114,27 @@ None - can start immediately.
 
 **Type:** AFK
 
-### What to build
+**Status:** ✅ Completed
 
-Add the runtime setup needed for Colab execution, including dependency installation, imports, secret loading, and model/client initialization. The slice should prove that the notebook can safely read required credentials without hardcoding or printing them.
+### What was built
 
-The completed slice should fail clearly when credentials are missing and should initialize the OpenAI model and GitHub client when credentials are present.
+Added the runtime setup section to the notebook, including:
+
+1. **Dependency installation** — `langchain`, `langgraph`, `langchain-openai`, `openai`, `pygithub`, `gitpython` installed via pip.
+2. **Secret loading** — `OPENAI_API_KEY` and `GITHUB_TOKEN` loaded from environment variables or Google Colab Secrets, with clear error messages when missing and without exposing values.
+3. **OpenAI model initialization** — `ChatOpenAI` initialized with configurable model name defaulting to `gpt-5.4-mini-2026-03-17`.
+4. **GitHub client initialization** — `Github` client authenticated, reporting the current user login without printing tokens.
+5. **GitHub token permissions documentation** — markdown section documenting required permissions (contents, issues, pull requests, metadata) for both classic and fine-grained tokens.
+6. **Secret loading rules documentation** — explicit rules that secrets are never hardcoded, never printed, and missing secrets halt setup with clear errors.
 
 ### Acceptance criteria
 
-- [ ] The notebook installs the required dependencies for LangChain, LangGraph, OpenAI, GitHub access, and Git operations.
-- [ ] The notebook loads `OPENAI_API_KEY` and `GITHUB_TOKEN` from environment variables or Colab Secrets only.
-- [ ] Missing secrets produce clear errors without exposing secret values.
-- [ ] The OpenAI chat model is initialized with configurable model name defaulting to `gpt-5.4-mini-2026-03-17`.
-- [ ] The GitHub client can authenticate and report the current user or repository access without printing tokens.
-- [ ] The setup section documents the required GitHub token permissions.
+- [x] The notebook installs the required dependencies for LangChain, LangGraph, OpenAI, GitHub access, and Git operations.
+- [x] The notebook loads `OPENAI_API_KEY` and `GITHUB_TOKEN` from environment variables or Colab Secrets only.
+- [x] Missing secrets produce clear errors without exposing secret values.
+- [x] The OpenAI chat model is initialized with configurable model name defaulting to `gpt-5.4-mini-2026-03-17`.
+- [x] The GitHub client can authenticate and report the current user or repository access without printing tokens.
+- [x] The setup section documents the required GitHub token permissions.
 
 ### Blocked by
 
