@@ -161,23 +161,24 @@ Added five distinct workflow test cases in the notebook, each calling `execute_w
 ## Issue 12: Document safety boundaries, limitations, and final submission guidance
 
 **Type:** AFK
+**Status:** ✅ Completed
 
-### What to build
+### What was built
 
-Add final notebook documentation that explains how to use the system safely, what the prototype intentionally does not do, and how the assignment should be submitted. The documentation should make the security model, GitHub permissions, human responsibilities, and prototype limitations explicit.
+Added final notebook documentation that explains how to use the system safely, what the prototype intentionally does not do, and how the assignment should be submitted. The documentation makes the security model, GitHub permissions, human responsibilities, and prototype limitations explicit.
 
-The completed slice should make the notebook ready to package as the final submission artifact.
+The completed slice makes the notebook ready to package as the final submission artifact.
 
 ### Acceptance criteria
 
-- [ ] The notebook documents that API keys must be stored in environment variables or Colab Secrets.
-- [ ] The notebook documents required GitHub token permissions.
-- [ ] The notebook documents that the workflow never pushes to the default branch and never merges PRs.
-- [ ] The notebook documents that the final merge decision belongs to the human user.
-- [ ] The notebook documents known limitations such as no web UI, no webhook handling, no auto-merge, and no production-grade sandboxing.
-- [ ] The notebook includes guidance for running the project in Google Colab.
-- [ ] The notebook includes guidance for packaging the `.ipynb` file, and optional supporting files, into the final ZIP submission.
-- [ ] The notebook includes final notes explaining that this is a balanced prototype for the assignment.
+- [x] The notebook documents that API keys must be stored in environment variables or Colab Secrets.
+- [x] The notebook documents required GitHub token permissions.
+- [x] The notebook documents that the workflow never pushes to the default branch and never merges PRs.
+- [x] The notebook documents that the final merge decision belongs to the human user.
+- [x] The notebook documents known limitations such as no web UI, no webhook handling, no auto-merge, and no production-grade sandboxing.
+- [x] The notebook includes guidance for running the project in Google Colab.
+- [x] The notebook includes guidance for packaging the `.ipynb` file, and optional supporting files, into the final ZIP submission.
+- [x] The notebook includes final notes explaining that this is a balanced prototype for the assignment.
 
 ### Blocked by
 
